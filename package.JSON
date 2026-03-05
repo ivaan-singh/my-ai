@@ -1,0 +1,9 @@
+{
+  "name": "my-ai",
+  "version": "1.0.0",
+  "description": "My chill football AI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
