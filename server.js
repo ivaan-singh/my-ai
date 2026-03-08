@@ -3,9 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-// ⬇️  PASTE YOUR ANTHROPIC API KEY HERE
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-
 const PORT = process.env.PORT || 3000;
 
 const MIME = {
@@ -16,7 +14,6 @@ const MIME = {
 };
 
 const server = http.createServer((req, res) => {
-  // CORS headers — allow all origins so the browser can call us
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -25,18 +22,17 @@ const server = http.createServer((req, res) => {
     res.writeHead(204); res.end(); return;
   }
 
-  // ── Proxy endpoint ──────────────────────────────────────
   if (req.method === 'POST' && req.url === '/api/chat') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
+      console.log('API KEY:', ANTHROPIC_API_KEY ? 'Found ✅' : 'Missing ❌');
       const options = {
         hostname: 'api.anthropic.com',
         path: '/v1/messages',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-           console.log('API KEY:', process.env.ANTHROPIC_API_KEY ? 'Found ✅' : 'Missing ❌'),
           'x-api-key': ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01',
           'anthropic-beta': 'web-search-2025-03-05',
@@ -60,7 +56,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // ── Serve static files ──────────────────────────────────
   let filePath = req.url === '/' ? '/index.html' : req.url;
   filePath = path.join(__dirname, filePath);
 
@@ -76,5 +71,4 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
-  console.log(`   Open the preview to use your AI`);
 });
