@@ -36,6 +36,7 @@ const server = http.createServer((req, res) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+           console.log('API KEY:', process.env.ANTHROPIC_API_KEY ? 'Found ✅' : 'Missing ❌'),
           'x-api-key': ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01',
           'anthropic-beta': 'web-search-2025-03-05',
