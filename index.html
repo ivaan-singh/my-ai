@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Your AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
   --bg: #080808;
@@ -21,6 +21,9 @@
   --muted2: #666;
   --user-bubble: #182608;
   --sidebar-w: 260px;
+  --code-bg: #0d1117;
+  --code-border: #30363d;
+  --code-header: #161b22;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -93,7 +96,6 @@ body {
 .new-chat-btn:hover { background: #caf56a; transform: translateY(-1px); }
 .new-chat-btn svg { flex-shrink: 0; }
 
-/* Search box */
 .sb-search {
   position: relative;
   padding: 10px 14px;
@@ -124,7 +126,6 @@ body {
   pointer-events: none;
 }
 
-/* Chat list */
 .sb-chats {
   flex: 1;
   overflow-y: auto;
@@ -151,7 +152,6 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.15s;
-  group: true;
   position: relative;
 }
 
@@ -211,7 +211,6 @@ body {
   font-style: italic;
 }
 
-/* Account section */
 .sb-bottom {
   border-top: 1px solid var(--border);
   padding: 12px 10px;
@@ -296,7 +295,6 @@ body {
   min-width: 0;
 }
 
-/* HEADER */
 header {
   display: flex;
   align-items: center;
@@ -410,6 +408,118 @@ header {
   border-bottom-right-radius: 4px;
 }
 
+/* ═══════════════════════════════
+   MARKDOWN STYLES
+═══════════════════════════════ */
+.bubble strong, .bubble b { font-weight: 700; color: #fff; }
+.bubble em, .bubble i { font-style: italic; color: #d4d4d4; }
+.bubble u { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Inline code */
+.bubble code:not(.block-code) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: rgba(184,240,74,0.08);
+  border: 1px solid rgba(184,240,74,0.2);
+  color: var(--green);
+  padding: 1px 6px;
+  border-radius: 5px;
+}
+
+/* Code block container */
+.code-block {
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid var(--code-border);
+  overflow: hidden;
+  font-size: 13px;
+}
+
+/* Code block header bar */
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--code-header);
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--code-border);
+}
+
+.code-lang {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted2);
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+}
+
+.copy-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: 1px solid var(--border2);
+  color: var(--muted2); font-family: 'DM Sans', sans-serif;
+  font-size: 11px; padding: 3px 8px; border-radius: 5px;
+  cursor: pointer; transition: all 0.18s;
+}
+
+.copy-btn:hover { border-color: var(--green); color: var(--green); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+/* Code block body */
+.code-body {
+  background: var(--code-bg);
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #e6edf3;
+  white-space: pre;
+}
+
+.code-body::-webkit-scrollbar { height: 3px; }
+.code-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* Blockquote */
+.bubble blockquote {
+  border-left: 3px solid var(--green-dim);
+  padding: 4px 0 4px 12px;
+  color: var(--muted2);
+  font-style: italic;
+  margin: 6px 0;
+}
+
+/* Lists */
+.bubble ul, .bubble ol {
+  padding-left: 18px;
+  margin: 4px 0;
+}
+
+.bubble li { margin: 2px 0; }
+
+/* Paragraphs within bubble */
+.bubble p { margin: 4px 0; }
+.bubble p:first-child { margin-top: 0; }
+.bubble p:last-child { margin-bottom: 0; }
+
+/* Headings in bubble (rare but possible) */
+.bubble h1, .bubble h2, .bubble h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: var(--green);
+  margin: 6px 0 2px;
+}
+.bubble h1 { font-size: 16px; }
+.bubble h2 { font-size: 15px; }
+.bubble h3 { font-size: 14px; }
+
+/* Horizontal rule */
+.bubble hr {
+  border: none;
+  border-top: 1px solid var(--border2);
+  margin: 8px 0;
+}
+
+/* Cursor for typewriter */
 .cursor {
   display: inline-block; width: 2px; height: 14px;
   background: var(--green); margin-left: 2px;
@@ -532,7 +642,6 @@ header {
 
 .welcome p { font-size: 13px; color: var(--muted2); }
 
-/* OVERLAY for mobile */
 #overlay {
   display: none;
   position: fixed; inset: 0;
@@ -540,7 +649,6 @@ header {
   z-index: 9;
 }
 
-/* MOBILE */
 @media (max-width: 680px) {
   #sidebar {
     position: fixed; top: 0; left: 0; bottom: 0;
@@ -558,7 +666,6 @@ header {
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div id="sidebar">
   <div class="sb-top">
     <div class="sb-logo">
@@ -576,19 +683,13 @@ header {
     <input type="text" id="chat-search" placeholder="Search chats..." oninput="filterChats(this.value)"/>
   </div>
 
-  <div class="sb-chats" id="chat-list">
-    <!-- populated by JS -->
-  </div>
+  <div class="sb-chats" id="chat-list"></div>
 
-  <div class="sb-bottom" id="sb-bottom">
-    <!-- populated by JS -->
-  </div>
+  <div class="sb-bottom" id="sb-bottom"></div>
 </div>
 
-<!-- MOBILE OVERLAY -->
 <div id="overlay" onclick="closeSidebar()"></div>
 
-<!-- MAIN -->
 <div id="main">
   <header>
     <button class="hamburger" onclick="toggleSidebar()">
@@ -639,11 +740,149 @@ header {
 
 <script>
 // ═══════════════════════
+// MARKDOWN RENDERER
+// ═══════════════════════
+function renderMarkdown(text) {
+  // Escape HTML in raw text (but we'll selectively unescape for markdown)
+  // We process block-level first, then inline
+
+  const lines = text.split('\n');
+  let html = '';
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // ── Fenced code block ──
+    const fenceMatch = line.match(/^```(\w*)$/);
+    if (fenceMatch) {
+      const lang = fenceMatch[1] || 'code';
+      let codeLines = [];
+      i++;
+      while (i < lines.length && !lines[i].startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      const codeContent = escHtml(codeLines.join('\n'));
+      const blockId = 'cb_' + Math.random().toString(36).slice(2, 8);
+      html += `
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">${escHtml(lang)}</span>
+            <button class="copy-btn" onclick="copyCode('${blockId}', this)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              copy
+            </button>
+          </div>
+          <pre class="code-body" id="${blockId}">${codeContent}</pre>
+        </div>`;
+      i++; // skip closing ```
+      continue;
+    }
+
+    // ── Headings ──
+    const h3 = line.match(/^### (.+)/);
+    const h2 = line.match(/^## (.+)/);
+    const h1 = line.match(/^# (.+)/);
+    if (h3) { html += `<h3>${inlineMarkdown(h3[1])}</h3>`; i++; continue; }
+    if (h2) { html += `<h2>${inlineMarkdown(h2[1])}</h2>`; i++; continue; }
+    if (h1) { html += `<h1>${inlineMarkdown(h1[1])}</h1>`; i++; continue; }
+
+    // ── Blockquote ──
+    if (line.startsWith('> ')) {
+      html += `<blockquote>${inlineMarkdown(line.slice(2))}</blockquote>`;
+      i++; continue;
+    }
+
+    // ── Horizontal rule ──
+    if (line.match(/^---+$/) || line.match(/^\*\*\*+$/)) {
+      html += `<hr>`; i++; continue;
+    }
+
+    // ── Unordered list ──
+    if (line.match(/^[-*+] /)) {
+      html += '<ul>';
+      while (i < lines.length && lines[i].match(/^[-*+] /)) {
+        html += `<li>${inlineMarkdown(lines[i].slice(2))}</li>`;
+        i++;
+      }
+      html += '</ul>';
+      continue;
+    }
+
+    // ── Ordered list ──
+    if (line.match(/^\d+\. /)) {
+      html += '<ol>';
+      while (i < lines.length && lines[i].match(/^\d+\. /)) {
+        html += `<li>${inlineMarkdown(lines[i].replace(/^\d+\. /, ''))}</li>`;
+        i++;
+      }
+      html += '</ol>';
+      continue;
+    }
+
+    // ── Empty line → paragraph break ──
+    if (line.trim() === '') {
+      html += '<br>';
+      i++; continue;
+    }
+
+    // ── Default paragraph ──
+    html += `<p>${inlineMarkdown(line)}</p>`;
+    i++;
+  }
+
+  return html;
+}
+
+function inlineMarkdown(text) {
+  // Escape HTML first
+  let out = escHtml(text);
+
+  // Inline code (before bold/italic to avoid conflicts)
+  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Bold+italic ***text***
+  out = out.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+
+  // Bold **text** or __text__
+  out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+  // Italic *text* or _text_
+  out = out.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  out = out.replace(/_([^_\n]+)_/g, '<em>$1</em>');
+
+  // Underline ++text++
+  out = out.replace(/\+\+(.+?)\+\+/g, '<u>$1</u>');
+
+  // Strikethrough ~~text~~
+  out = out.replace(/~~(.+?)~~/g, '<del>$1</del>');
+
+  return out;
+}
+
+function copyCode(blockId, btn) {
+  const pre = document.getElementById(blockId);
+  if (!pre) return;
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> copied!`;
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy`;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ═══════════════════════
 // STATE
 // ═══════════════════════
 const STORAGE_KEY = 'myai_chats_v2';
 const USER_KEY    = 'myai_user_v1';
-const TTL_MS      = 48 * 60 * 60 * 1000; // 48h for guests
+const TTL_MS      = 48 * 60 * 60 * 1000;
 
 let currentChatId = null;
 let history       = [];
@@ -659,7 +898,6 @@ function loadChats() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const chats = JSON.parse(raw);
-    // If guest, prune chats older than 48h
     if (!user || user.type === 'guest') {
       const cutoff = Date.now() - TTL_MS;
       return chats.filter(c => c.updatedAt > cutoff);
@@ -688,13 +926,9 @@ function saveUser(u) {
 // CHAT MANAGEMENT
 // ═══════════════════════
 function newChat() {
-  // Save current chat first
   if (currentChatId && history.length > 0) saveCurrentChat();
-
   currentChatId = 'chat_' + Date.now();
   history = [];
-
-  // Reset UI
   const messagesEl = document.getElementById('messages');
   messagesEl.innerHTML = `
     <div class="welcome" id="welcome">
@@ -704,7 +938,6 @@ function newChat() {
     </div>`;
   document.getElementById('chips').style.display = 'flex';
   document.getElementById('chat-title').textContent = 'Your AI';
-
   renderChatList();
   closeSidebar();
   document.getElementById('input').focus();
@@ -712,24 +945,19 @@ function newChat() {
 
 function saveCurrentChat() {
   if (!currentChatId || history.length === 0) return;
-
   const firstUserMsg = history.find(m => m.role === 'user');
   const title = firstUserMsg
     ? firstUserMsg.content.slice(0, 38) + (firstUserMsg.content.length > 38 ? '…' : '')
     : 'New chat';
-
   const existing = allChats.findIndex(c => c.id === currentChatId);
   const chatObj = {
-    id: currentChatId,
-    title,
+    id: currentChatId, title,
     history: [...history],
     updatedAt: Date.now(),
     userId: user?.id || 'guest'
   };
-
   if (existing >= 0) allChats[existing] = chatObj;
   else allChats.unshift(chatObj);
-
   saveChats();
   renderChatList();
   document.getElementById('chat-title').textContent = title.slice(0, 24) + (title.length > 24 ? '…' : '');
@@ -737,24 +965,18 @@ function saveCurrentChat() {
 
 function loadChat(chatId) {
   if (currentChatId && history.length > 0) saveCurrentChat();
-
   const chat = allChats.find(c => c.id === chatId);
   if (!chat) return;
-
   currentChatId = chat.id;
   history = [...chat.history];
-
-  // Rebuild messages UI
   const messagesEl = document.getElementById('messages');
   messagesEl.innerHTML = '';
   document.getElementById('chips').style.display = 'none';
   document.getElementById('chat-title').textContent = chat.title.slice(0,24) + (chat.title.length>24?'…':'');
-
   history.forEach(m => {
     const role = m.role === 'user' ? 'user' : 'ai';
     appendBubble(role, m.content);
   });
-
   messagesEl.scrollTop = messagesEl.scrollHeight;
   renderChatList();
   closeSidebar();
@@ -789,18 +1011,14 @@ function renderChatList(query = '') {
     const matchesQuery = !query || c.title.toLowerCase().includes(query);
     return matchesUser && matchesQuery;
   });
-
   if (visibleChats.length === 0) {
     el.innerHTML = `<div class="no-chats">${query ? 'No chats found' : 'No chats yet'}</div>`;
     return;
   }
-
-  // Group: today vs earlier
   const now = Date.now();
   const todayCutoff = now - 24*60*60*1000;
   const today = visibleChats.filter(c => c.updatedAt > todayCutoff);
   const earlier = visibleChats.filter(c => c.updatedAt <= todayCutoff);
-
   let html = '';
   if (today.length) {
     html += `<div class="sb-section-label">Today</div>`;
@@ -810,7 +1028,6 @@ function renderChatList(query = '') {
     html += `<div class="sb-section-label">Earlier</div>`;
     earlier.forEach(c => html += chatItemHTML(c));
   }
-
   el.innerHTML = html;
 }
 
@@ -830,11 +1047,11 @@ function chatItemHTML(c) {
 }
 
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ═══════════════════════
-// AUTH (simulated)
+// AUTH
 // ═══════════════════════
 function renderAccount() {
   const el = document.getElementById('sb-bottom');
@@ -866,15 +1083,9 @@ function renderAccount() {
 }
 
 function signIn(provider) {
-  // Simulate OAuth — in a real app you'd redirect to OAuth flow
   const names = { google: 'You (Google)', microsoft: 'You (Microsoft)' };
-  const mockUser = {
-    id: provider + '_user_1',
-    name: names[provider],
-    type: provider
-  };
+  const mockUser = { id: provider + '_user_1', name: names[provider], type: provider };
   saveUser(mockUser);
-  // Re-tag existing guest chats to this user
   allChats.forEach(c => { if (c.userId === 'guest') c.userId = mockUser.id; });
   saveChats();
   renderAccount();
@@ -910,7 +1121,7 @@ function showToast(msg) {
 }
 
 // ═══════════════════════
-// SIDEBAR TOGGLE
+// SIDEBAR
 // ═══════════════════════
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
@@ -928,7 +1139,7 @@ const thinkPhrases = ['thinking...','on it...','give me a sec...','cooking...','
 
 const SYSTEM_PROMPT = `You are a chill, laid-back AI homie who loves football (soccer). You have access to web search.
 Rules:
-- Keep replies SHORT. 1-3 sentences max. Like texting a mate.
+- Keep replies SHORT. 1-3 sentences max for casual chat. Longer only for code or detailed explanations.
 - Casual tone always. No formal language ever.
 - Real opinions. No fence-sitting.
 - Use footy slang when relevant (worldie, tekkers, top bins, banger, etc.)
@@ -936,12 +1147,14 @@ Rules:
 - Can chat about anything but football is your zone
 - Search the web for scores, news, transfers, standings, or anything needing fresh info
 - Never mention you're an AI unless directly asked
+- Format code with proper markdown code blocks using triple backticks and language name
+- Use **bold** for emphasis, *italic* for flair, \`inline code\` for short snippets, ++underline++ for key terms
 - Today's date is ${new Date().toDateString()}`;
 
-const inputEl    = document.getElementById('input');
-const sendBtn    = document.getElementById('sendBtn');
+const inputEl     = document.getElementById('input');
+const sendBtn     = document.getElementById('sendBtn');
 const thinkingBar = document.getElementById('thinking-bar');
-const thinkText  = document.getElementById('think-text');
+const thinkText   = document.getElementById('think-text');
 
 inputEl.addEventListener('input', () => {
   inputEl.style.height = 'auto';
@@ -964,6 +1177,7 @@ function quickSend(el) {
   document.getElementById('chips').style.display = 'none';
 }
 
+// Append a fully-rendered bubble (for loading past messages)
 function appendBubble(role, text) {
   const messagesEl = document.getElementById('messages');
   const div = document.createElement('div');
@@ -973,7 +1187,11 @@ function appendBubble(role, text) {
   av.textContent = role === 'ai' ? '⚽' : (user && user.type !== 'guest' ? user.name[0].toUpperCase() : '😎');
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  bubble.textContent = text;
+  if (role === 'ai') {
+    bubble.innerHTML = renderMarkdown(text);
+  } else {
+    bubble.textContent = text;
+  }
   div.appendChild(av); div.appendChild(bubble);
   messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -985,6 +1203,7 @@ function addMessage(role, text) {
   appendBubble(role, text);
 }
 
+// Typewriter that streams into a rendered markdown bubble
 function typeMessage(text) {
   const w = document.getElementById('welcome');
   if (w) w.style.display = 'none';
@@ -995,21 +1214,36 @@ function typeMessage(text) {
   av.className = 'msg-av'; av.textContent = '⚽';
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  const cursor = document.createElement('span');
-  cursor.className = 'cursor';
-  bubble.appendChild(cursor);
   div.appendChild(av); div.appendChild(bubble);
   messagesEl.appendChild(div);
 
+  // Stream character by character, then render markdown at the end
   let i = 0;
-  const speed = Math.max(16, Math.min(40, 1800 / text.length));
+  const speed = Math.max(12, Math.min(35, 1800 / text.length));
+
   return new Promise(resolve => {
+    // Show a plain-text cursor while typing
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    bubble.appendChild(cursor);
+
+    // We use a text node that grows
+    const textNode = document.createTextNode('');
+    bubble.insertBefore(textNode, cursor);
+
     function type() {
       if (i < text.length) {
-        bubble.insertBefore(document.createTextNode(text[i]), cursor);
-        i++; messagesEl.scrollTop = messagesEl.scrollHeight;
+        textNode.textContent += text[i];
+        i++;
+        messagesEl.scrollTop = messagesEl.scrollHeight;
         setTimeout(type, speed);
-      } else { cursor.remove(); resolve(); }
+      } else {
+        // Done typing — render full markdown
+        cursor.remove();
+        bubble.innerHTML = renderMarkdown(text);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        resolve();
+      }
     }
     type();
   });
@@ -1025,7 +1259,6 @@ async function sendMessage() {
   const text = inputEl.value.trim();
   if (!text || isThinking) return;
 
-  // Init chat id if needed
   if (!currentChatId) currentChatId = 'chat_' + Date.now();
 
   inputEl.value = ''; inputEl.style.height = 'auto';
@@ -1093,7 +1326,6 @@ async function sendMessage() {
 // INIT
 // ═══════════════════════
 function init() {
-  // Prune expired guest chats
   if (!user || user.type === 'guest') {
     const cutoff = Date.now() - TTL_MS;
     allChats = allChats.filter(c => c.updatedAt > cutoff);
