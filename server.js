@@ -185,29 +185,6 @@ async function sendMessage(userPrompt) {
       }
     };
 
-    const proxyReq = https.request(options, proxyRes => {
-      let responseData = '';
-      proxyRes.on('data', chunk => responseData += chunk);
-      proxyRes.on('end', () => {
-        try {
-          const data = JSON.parse(responseData);
-          const output = data?.completion || data?.message?.content || "";
-          const outputTokens = estimateTokens(output);
-
-          // Update chat history & cost
-          chatHistory.push({ role: "user", content: userPrompt, tokens: inputTokens });
-          chatHistory.push({ role: "assistant", content: output, tokens: outputTokens });
-          const cost = calcMessageCost(inputTokens, outputTokens);
-          totalSpent += cost;
-          const remaining = Math.floor((BUDGET - totalSpent) / cost);
-
-          resolve({ output, cost, totalSpent, remaining, usedWebSearch: useWebSearch });
-        } catch (err) {
-          reject(err);
-        }
-      });
-    });
-
     proxyReq.on('error', err => reject(err));
     proxyReq.write(body);
     proxyReq.end();
