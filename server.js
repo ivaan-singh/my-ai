@@ -50,12 +50,11 @@ function needsWebSearch(message) {
 
 // Send message to Claude
 async function sendMessage(userPrompt) {
-  // ============================
-  // Limit input to 20,000 tokens
-  // ============================
+  // ----------------------------
+  // Limit input length
+  // ----------------------------
   const MAX_INPUT_TOKENS = 20000;
   const MAX_INPUT_CHARS = MAX_INPUT_TOKENS * 4; // 1 token ≈ 4 chars
-
   if (userPrompt.length > MAX_INPUT_CHARS) {
     console.warn(`⚠️ Input too long, trimming to ${MAX_INPUT_TOKENS} tokens (~${MAX_INPUT_CHARS} chars)`);
     userPrompt = userPrompt.slice(0, MAX_INPUT_CHARS);
@@ -63,20 +62,71 @@ async function sendMessage(userPrompt) {
 
   const inputTokens = estimateTokens(userPrompt);
 
+  // ----------------------------
+  // Prepare chat history
+  // ----------------------------
   trimChatHistory();
-
-  const messages = chatHistory.map(m => ({ role: m.role, content: m.content }));
-  messages.push({ role: "user", content: userPrompt });
+  const messages = [
+    ...chatHistory.map(m => ({ role: m.role, content: m.content })),
+    { role: "user", content: userPrompt }
+  ];
 
   const useWebSearch = needsWebSearch(userPrompt);
   const tools = useWebSearch ? [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }] : [];
 
   const body = JSON.stringify({
     model: "claude-sonnet-4-5",
-    messages: messages,
-    tools: tools,
+    messages,
+    tools,
     max_tokens: MAX_TOKENS
   });
+
+  // ----------------------------
+  // Send request to Claude
+  // ----------------------------
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'web-search-2025-03-05',
+        'Content-Length': Buffer.byteLength(body)
+      }
+    };
+
+    const req = https.request(options, res => {
+      let responseData = '';
+      res.on('data', chunk => responseData += chunk);
+      res.on('end', () => {
+        try {
+          const data = JSON.parse(responseData);
+          const output = data?.completion || data?.message?.content || "";
+          const outputTokens = estimateTokens(output);
+
+          // Update chat history & cost
+          chatHistory.push({ role: "user", content: userPrompt, tokens: inputTokens });
+          chatHistory.push({ role: "assistant", content: output, tokens: outputTokens });
+
+          const cost = calcMessageCost(inputTokens, outputTokens);
+          totalSpent += cost;
+          const remaining = Math.floor((BUDGET - totalSpent) / cost);
+
+          resolve({ output, cost, totalSpent, remaining, usedWebSearch: useWebSearch });
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+
+    req.on('error', err => reject(err));
+    req.write(body);
+    req.end();
+  });
+}
 
   return new Promise((resolve, reject) => {
     const options = {
